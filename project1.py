@@ -23,8 +23,19 @@ def switch(puzz, a, b):
 def find(puzz, x = 0):
 	for i in range(len(puzz)):
 		if puzz[i] == x:
-			return i;
-	return -1;
+			return i
+	return -1
+
+# def isValidPuzz8(puzz)
+# returns 1 if 0-8 are present, and len = 9, or 0
+def isValidPuzz8(puzz):
+	if len(puzz) == 9:
+		for i in range(9):
+			if find(puzz, i) == -1:
+				return 0
+		return 1
+	return 0
+
 # Helper Functions ^^^ ===============================================================
 
 # Node Class vvv ===============================================================
@@ -181,69 +192,106 @@ def main():
 	userChoice = 0
 	init = puzz8()
 
-	# while (1):
-	# 	print ()
-	# 	print ("Welcome to 861287993 / jlee434's 8-puzzle solver (ctrl+c to exit).")
-	# 	while userChoice != "1" and userChoice != "2":
-	# 		print ("Type '1' to use a default puzzle or '2' to enter your own puzzle (press enter to submit).")
-	# 		userChoice = input()
+	while (1):
+		flag = 1
+		print ()
+		print ("Welcome to 861287993 / jlee434's 8-puzzle solver (ctrl+c to exit).")
+		while userChoice != "1" and userChoice != "2" and userChoice != "3":
+			print ("Type '1' to use a default puzzle. (press enter to submit)")
+			print ("Type '2' to enter your own puzzle.")
+			print ("Type '3' to run all three algorithms on all 6 default puzzles.")
+			userChoice = input()
 
-	# 	if userChoice == "1":
-	# 		userChoice = 0
-	# 		while userChoice != "1" and userChoice != "2" and userChoice != "3" and userChoice != "4" and userChoice != "5" and userChoice != "6":
-	# 			print ("Type the number of the default puzzle you would like (press enter to submit).")
-	# 			print ("1. trivial")
-	# 			print ("2. very easy")
-	# 			print ("3. easy")
-	# 			print ("4. doable")
-	# 			print ("5. ohboy")
-	# 			print ("6. impossible")
-	# 			userChoice = input()
-	# 		userChoice = (int)(userChoice)
-	# 		init = puzz8( testCases[userChoice-1] )
-
-
-	# 	elif userChoice == "2":
-	# 		userChoice = 0
-	# 		print ("Enter your puzzle, use a zero to represent the blank.")
-	# 		print ("Enter your first row, use a space or tab between numbers (press enter to submit).")
-	# 		print ("Enter your second row, use a space or tab between numbers (press enter to submit).")
-	# 		print ("Enter your third row, use a space or tab between numbers (press enter to submit).")
+		if userChoice == "1":
+			userChoice = 0
+			while userChoice != "1" and userChoice != "2" and userChoice != "3" and userChoice != "4" and userChoice != "5" and userChoice != "6":
+				print ("Type the number of the default puzzle you would like (press enter to submit).")
+				print ("1. trivial")
+				print ("2. very easy")
+				print ("3. easy")
+				print ("4. doable")
+				print ("5. ohboy")
+				print ("6. impossible")
+				userChoice = input()
+			userChoice = (int)(userChoice)
+			init = puzz8( testCases[userChoice-1] )
 
 
-	# 	userChoice = 0
-	# 	while userChoice != "1" and userChoice != "2" and userChoice != "3":
-	# 		print ("Enter your choice of algorithm (press enter to submit).")
-	# 		print ("1. Uniform Cost Search.")
-	# 		print ("2. A* with the Misplaced Tile heuristic.")
-	# 		print ("3. A* with the Manhattan distance heuristic.")
-	# 		userChoice = input()
-	# 	userChoice = (int)(userChoice)
+		elif userChoice == "2":
+			userChoice = 0
+			while(flag):
+				flag = 0
+				print ("Enter your puzzle (number 0 - 8), use a zero to represent the blank.")
+				print ("Enter your first row, use a space or tab between numbers (press enter to submit).")
+				userChoice = input()
+				a = userChoice.split()
+				print(a)
+				if len(a) != 3:
+					flag = 1
+				print ("Enter your second row, use a space or tab between numbers (press enter to submit).")
+				userChoice = input()
+				a = a + userChoice.split()
+				print(a)
+				if len(a) != 6:
+					flag = 1
+				print ("Enter your third row, use a space or tab between numbers (press enter to submit).")
+				userChoice = input()
+				a = a + userChoice.split()
+				print(a)
+				if len(a) != 9:
+					flag = 1
 
-	# 	print (init)
-	# 	sol, expanded, maxQ = graphSearch(init, algs[userChoice - 1])
+				for i in range(len(a)):
+					if (a[i].isdigit()):
+						a[i] = (int)(a[i])
+					else:
+						flag = 1
+						print (a[i])
 
-	storeVals = [];
-	for i in range(6):
-		storeVals.append([ {}, {} ,{} ])
+				if isValidPuzz8(a) == 0:
+					flag = 1
 
-	
-	for i in range(6):
-		for j in range(3):
-			sol, expanded, maxQ = graphSearch(puzz8(testCases[i]), algs[j], 1000000)
-			storeVals[i][j] = {'s': sol, 'e': expanded, 'm': maxQ, 'i': puzz8(testCases[i], 0, algs[j](testCases[i]) ) }
+				if flag == 1:
+					print ("Something about the puzzle you entered was wrong, Please try again.")
+					print()
+					continue
 
-	out = open('trace.txt','w')
-	for i in range(6 ):
-		for j in range(3):
-			out.write( 'Test Case - ' + testCaseNames[i] + ', with Alg - ' + algNames[j] + '\n')
-			out.write( 'Initial State = [' + ','.join(map(str, testCases[i])) + '] g = ' + str(storeVals[i][j]['i'].g) + ' h = ' + str(storeVals[i][j]['i'].h) + '\n')
-			out.write( 'Max Queue Size = ' + str(storeVals[i][j]['m']) + '\n')
-			out.write( 'Nodes Expanded = ' + str(storeVals[i][j]['e']) + '\n')
-			out.write( 'Solution State = [' + ','.join(map(str, storeVals[i][j]['s'].puzz)) + '] g = ' + str(storeVals[i][j]['s'].g) + ' h = ' + str(storeVals[i][j]['s'].h) + '\n' + '\n')
+				init = init = puzz8( a )
+
+		elif userChoice == "3":
+			print ("Running all three algorithms on all 6 default puzzles, outputting to 'trace.txt'.")
+			storeVals = [];
+			for i in range(6):
+				storeVals.append([ {}, {} ,{} ])
+
+			
+			for i in range(6):
+				for j in range(3):
+					sol, expanded, maxQ = graphSearch(puzz8(testCases[i]), algs[j], 1000000)
+					storeVals[i][j] = {'s': sol, 'e': expanded, 'm': maxQ, 'i': puzz8(testCases[i], 0, algs[j](testCases[i]) ) }
+
+			out = open('trace.txt','w')
+			for i in range(6 ):
+				for j in range(3):
+					out.write( 'Test Case - ' + testCaseNames[i] + ', with Alg - ' + algNames[j] + '\n')
+					out.write( 'Initial State = [' + ','.join(map(str, testCases[i])) + '] g = ' + str(storeVals[i][j]['i'].g) + ' h = ' + str(storeVals[i][j]['i'].h) + '\n')
+					out.write( 'Max Queue Size = ' + str(storeVals[i][j]['m']) + '\n')
+					out.write( 'Nodes Expanded = ' + str(storeVals[i][j]['e']) + '\n')
+					out.write( 'Solution State = [' + ','.join(map(str, storeVals[i][j]['s'].puzz)) + '] g = ' + str(storeVals[i][j]['s'].g) + ' h = ' + str(storeVals[i][j]['s'].h) + '\n' + '\n')
 
 
+		if userChoice != "3":
+			userChoice = 0
+			while userChoice != "1" and userChoice != "2" and userChoice != "3":
+				print ("Enter your choice of algorithm (press enter to submit).")
+				print ("1. Uniform Cost Search.")
+				print ("2. A* with the Misplaced Tile heuristic.")
+				print ("3. A* with the Manhattan distance heuristic.")
+				userChoice = input()
+			userChoice = (int)(userChoice)
 
+			print (init)
+			sol, expanded, maxQ = graphSearch(init, algs[userChoice - 1])
 main();
 
 
