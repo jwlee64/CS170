@@ -29,10 +29,10 @@ def find(puzz, x = 0):
 
 # Node Class vvv ===============================================================
 class puzz8:
-	def __init__(self, g = 0, puzz = [0,0,0,0,0,0,0,0,0], h = 0):
-		self.g = g #dist from initial
-		self.puzz = puzz
-		self.h = h
+	def __init__(self, puzz = [0,0,0,0,0,0,0,0,0], g = 0, h = 0):
+		self.g = g # dist from initial
+		self.puzz = puzz # array 
+		self.h = h # heuristic weight
 
 	def print(self):
 		printPuzz8(self.puzz)
@@ -40,9 +40,9 @@ class puzz8:
 
 # Heuristic Functions vvv ===============================================================
 
-# def returnZero()
+# def returnZero( puzz )
 # returns 0 for Uniform Cost Search, or no heuristic
-def returnZero():
+def returnZero( puzz ):
 	return 0
 
 # def misplacedTiles( puzz )
@@ -90,22 +90,22 @@ def expand(choice, frontier, alg, explored):
 		if (x+1)%3 != 0: # if not in right column
 			temp = switch(p, x, x+1)
 			if tuple(temp) not in explored:
-				frontier.append( puzz8(g+1, temp, alg(temp)) ) # to the right of space
+				frontier.append( puzz8( temp, g+1, alg(temp)) ) # to the right of space
 			i+=1
 		if x > 2: # if not in top row
 			temp = switch(p, x, x-3)
 			if tuple(temp) not in explored:
-				frontier.append( puzz8(g+1, temp, alg(temp)) ) # to the top of space
+				frontier.append( puzz8( temp, g+1, alg(temp)) ) # to the top of space
 			i+=1
 		if x < 6: # if not in bottom row
 			temp = switch(p, x, x+3)
 			if tuple(temp) not in explored:
-				frontier.append( puzz8(g+1, temp, alg(temp)) ) # to the bottom of space
+				frontier.append( puzz8( temp, g+1, alg(temp)) ) # to the bottom of space
 			i+=1
 		if (x+1)%3 != 1: # if not in left column
 			temp = switch(p, x, x-1)
 			if tuple(temp) not in explored:
-				frontier.append( puzz8(g+1, temp, alg(temp)) ) # to the left of space
+				frontier.append( puzz8( temp, g+1, alg(temp)) ) # to the left of space
 			i+=1
 		print ( i, "nodes added")
 	else:
@@ -139,6 +139,8 @@ def graphSearch (puzz, alg = returnZero, maxNodes = 100000):
 	
 	# loop until maxNodes default 100,000 , so no infinite loop
 	for i in range(maxNodes):
+		if len(frontier) < 1:
+			break;
 		choice = choose(frontier) # choose lowest cost node
 
 		print ("The best state to expand with g(n) =", frontier[choice].g, "and h(n) =", frontier[choice].h, "is")
@@ -148,16 +150,16 @@ def graphSearch (puzz, alg = returnZero, maxNodes = 100000):
 			print ("goal found")
 			print ("To solve this problem the search algorithm expanded a total of", len(explored), "nodes.")
 			print ("The maximum number of nodes in the queue at any one time was", maxQ, ".")
-			return frontier[choice] #returns
+			return frontier[choice], len(explored), maxQ #returns
 
-		explored.add(tuple(frontier[choice].puzz)) # add puzzle instance to explored since objs will be different
 		expand(frontier[choice], frontier, alg, explored) # expand node
+		explored.add(tuple(frontier[choice].puzz)) # add puzzle instance to explored since objs will be different
 		if maxQ < len(frontier): # updates max queue size 
 			maxQ = len(frontier)
 		frontier.pop(choice) # remove choice from frontier
 
-	print ("Did not find a solution in", maxNodes, "nodes.")
-	return puzz8() # if no solution found return empty puzzle
+	print ("Did not find a solution in", len(explored), "nodes.")
+	return puzz8(), len(explored), maxQ # if no solution found return empty puzzle
 
 # Search Functions ^^^ ===============================================================
 
@@ -169,14 +171,78 @@ doable = 	[0,1,2,4,5,3,7,8,6]
 ohboy = 	[8,7,1,6,0,2,5,4,3]
 imp = 		[1,2,3,4,5,6,8,7,0]
 
-cases = [ [1,2,3,4,5,6,7,8,0], [1,2,3,4,5,6,7,0,8], [1,2,0,4,5,3,7,8,6], [0,1,2,4,5,3,7,8,6], [8,7,1,6,0,2,5,4,3], [1,2,3,4,5,6,8,7,0] ]
+testCases = [ [1,2,3,4,5,6,7,8,0], [1,2,3,4,5,6,7,0,8], [1,2,0,4,5,3,7,8,6], [0,1,2,4,5,3,7,8,6], [8,7,1,6,0,2,5,4,3], [1,2,3,4,5,6,8,7,0] ]
+testCaseNames = [ "trivial", "very easy", "easy", "doable", "ohboy", "impossible"]
+algs = [ returnZero, misplacedTiles, manhattanDist ]
+algNames = [ "Uniform Cost Search", "A* with the Misplaced Tile heuristic", "A* with the Manhattan distance heuristic"]
 # test states ^^^ ===============================================================
 
 def main():
-	print ("Welcome to 861287993 / jlee434's 8-puzzle solver.")
+	userChoice = 0
+	init = puzz8()
+
+	# while (1):
+	# 	print ()
+	# 	print ("Welcome to 861287993 / jlee434's 8-puzzle solver (ctrl+c to exit).")
+	# 	while userChoice != "1" and userChoice != "2":
+	# 		print ("Type '1' to use a default puzzle or '2' to enter your own puzzle (press enter to submit).")
+	# 		userChoice = input()
+
+	# 	if userChoice == "1":
+	# 		userChoice = 0
+	# 		while userChoice != "1" and userChoice != "2" and userChoice != "3" and userChoice != "4" and userChoice != "5" and userChoice != "6":
+	# 			print ("Type the number of the default puzzle you would like (press enter to submit).")
+	# 			print ("1. trivial")
+	# 			print ("2. very easy")
+	# 			print ("3. easy")
+	# 			print ("4. doable")
+	# 			print ("5. ohboy")
+	# 			print ("6. impossible")
+	# 			userChoice = input()
+	# 		userChoice = (int)(userChoice)
+	# 		init = puzz8( testCases[userChoice-1] )
 
 
-	graphSearch(init, manhattanDist)
+	# 	elif userChoice == "2":
+	# 		userChoice = 0
+	# 		print ("Enter your puzzle, use a zero to represent the blank.")
+	# 		print ("Enter your first row, use a space or tab between numbers (press enter to submit).")
+	# 		print ("Enter your second row, use a space or tab between numbers (press enter to submit).")
+	# 		print ("Enter your third row, use a space or tab between numbers (press enter to submit).")
+
+
+	# 	userChoice = 0
+	# 	while userChoice != "1" and userChoice != "2" and userChoice != "3":
+	# 		print ("Enter your choice of algorithm (press enter to submit).")
+	# 		print ("1. Uniform Cost Search.")
+	# 		print ("2. A* with the Misplaced Tile heuristic.")
+	# 		print ("3. A* with the Manhattan distance heuristic.")
+	# 		userChoice = input()
+	# 	userChoice = (int)(userChoice)
+
+	# 	print (init)
+	# 	sol, expanded, maxQ = graphSearch(init, algs[userChoice - 1])
+
+	storeVals = [];
+	for i in range(6):
+		storeVals.append([ {}, {} ,{} ])
+
+	
+	for i in range(6):
+		for j in range(3):
+			sol, expanded, maxQ = graphSearch(puzz8(testCases[i]), algs[j], 1000000)
+			storeVals[i][j] = {'s': sol, 'e': expanded, 'm': maxQ, 'i': puzz8(testCases[i], 0, algs[j](testCases[i]) ) }
+
+	out = open('trace.txt','w')
+	for i in range(6 ):
+		for j in range(3):
+			out.write( 'Test Case - ' + testCaseNames[i] + ', with Alg - ' + algNames[j] + '\n')
+			out.write( 'Initial State = [' + ','.join(map(str, testCases[i])) + '] g = ' + str(storeVals[i][j]['i'].g) + ' h = ' + str(storeVals[i][j]['i'].h) + '\n')
+			out.write( 'Max Queue Size = ' + str(storeVals[i][j]['m']) + '\n')
+			out.write( 'Nodes Expanded = ' + str(storeVals[i][j]['e']) + '\n')
+			out.write( 'Solution State = [' + ','.join(map(str, storeVals[i][j]['s'].puzz)) + '] g = ' + str(storeVals[i][j]['s'].g) + ' h = ' + str(storeVals[i][j]['s'].h) + '\n' + '\n')
+
+
 
 main();
 
