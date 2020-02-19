@@ -2,13 +2,13 @@ import copy
 
 # Helper Functions vvv ===============================================================
 
-# def printPuzz8( puzz )
+# def printPuzz8( list:puzz )
 # prints a 3x3 puzzle
 def printPuzz8 ( puzz ):
 	for i in range(3):
 		print (puzz[(3*i)+0], puzz[(3*i)+1], puzz[(3*i)+2])
 
-# def switch(puzz, a, b)
+# def switch(list:puzz, int:a, int:b)
 # switches two positions in an array, returns a new copy
 def switch(puzz, a, b): 
 	aVal = puzz[a]
@@ -18,7 +18,7 @@ def switch(puzz, a, b):
 	newPuzz[b] = aVal
 	return newPuzz
 
-# def find(puzz, x = 0)
+# def find(list:puzz, int:x = 0)
 # returns index of a value in an array, returns -1 if not found
 def find(puzz, x = 0):
 	for i in range(len(puzz)):
@@ -26,7 +26,7 @@ def find(puzz, x = 0):
 			return i
 	return -1
 
-# def isValidPuzz8(puzz)
+# def isValidPuzz8( list:puzz )
 # returns 1 if 0-8 are present, and len = 9, or 0
 def isValidPuzz8(puzz):
 	if len(puzz) == 9:
@@ -51,12 +51,12 @@ class puzz8:
 
 # Heuristic Functions vvv ===============================================================
 
-# def returnZero( puzz )
+# def returnZero( list:puzz )
 # returns 0 for Uniform Cost Search, or no heuristic
 def returnZero( puzz ):
 	return 0
 
-# def misplacedTiles( puzz )
+# def misplacedTiles( list:puzz )
 # returns amount of misplaced tiles in a puzzle
 def misplacedTiles( puzz ):
 	cnt = 0
@@ -65,7 +65,7 @@ def misplacedTiles( puzz ):
 			cnt+=1
 	return cnt
 
-# def manhattanDist( puzz )
+# def manhattanDist( list:puzz )
 # returns manhattan dist for a puzzle
 def manhattanDist( puzz ):
 	cnt = 0
@@ -86,7 +86,7 @@ def manhattanDist( puzz ):
 
 # Search Functions vvv ===============================================================
 
-# def expand(choice, frontier, alg, explored)
+# def expand(puzz8:choice, array:frontier, func:alg, set(tuples):explored)
 # expands the node as long as not in explored
 # adds possible moves to frontier if not in explored
 # calculates cost of node
@@ -123,8 +123,8 @@ def expand(choice, frontier, alg, explored):
 		print ("Node already explored, moving on.")
 	print()
 
-# def choose(frontier)
-# chooses the lowest cost node from frontier
+# def choose(list:frontier)
+# chooses the lowest cost node from frontier list
 def choose( frontier ): 
 	state = 0
 	minCost = frontier[0].g + frontier[0].h
@@ -136,7 +136,7 @@ def choose( frontier ):
 			state = i
 	return state
 
-# def graphSearch (puzz, alg = returnZero, maxNodes = 100000)
+# def graphSearch (puzz8:puzz, func:alg = returnZero, int:maxNodes = 100000)
 # initial state, heuristic func, maxNodes
 def graphSearch (puzz, alg = returnZero, maxNodes = 100000):
 	puzz.h = alg(puzz.puzz) # add heuristic cost to initial state
@@ -187,6 +187,23 @@ testCaseNames = [ "trivial", "very easy", "easy", "doable", "ohboy", "impossible
 algs = [ returnZero, misplacedTiles, manhattanDist ]
 algNames = [ "Uniform Cost Search", "A* with the Misplaced Tile heuristic", "A* with the Manhattan distance heuristic"]
 # test states ^^^ ===============================================================
+
+# test functions vvv ===============================================================
+
+# def testHeuristic( puzz8:puzz )
+# runs heuristic on puzz8, initial state
+def testHeuristic( puzz ):
+	userChoice = 0
+	while userChoice != "1" and userChoice != "2":
+		print ("Testing only Heuristic on puzzle")
+		print ("Enter your choice of heuristic (press enter to submit).")
+		print ("1. Misplaced Tile heuristic.")
+		print ("2. Manhattan distance heuristic.")
+		userChoice = input()
+	userChoice = (int)(userChoice)
+	print ("Heuristic returned " + str(algs[userChoice](puzz.puzz)) + " estimated distance from the goal.")
+
+# test functions ^^^ ===============================================================
 
 def main():
 	userChoice = 0
@@ -282,16 +299,21 @@ def main():
 
 		if userChoice != "3":
 			userChoice = 0
-			while userChoice != "1" and userChoice != "2" and userChoice != "3":
+			while userChoice != "1" and userChoice != "2" and userChoice != "3" and userChoice != "4":
 				print ("Enter your choice of algorithm (press enter to submit).")
 				print ("1. Uniform Cost Search.")
 				print ("2. A* with the Misplaced Tile heuristic.")
 				print ("3. A* with the Manhattan distance heuristic.")
+				print ("4. Test only Heuristic separate from search.")
 				userChoice = input()
-			userChoice = (int)(userChoice)
 
-			print (init)
-			sol, expanded, maxQ = graphSearch(init, algs[userChoice - 1])
+			if userChoice == "4":
+				testHeuristic(init)
+			else: 
+				userChoice = (int)(userChoice)
+
+				print (init)
+				sol, expanded, maxQ = graphSearch(init, algs[userChoice - 1])
 main();
 
 
