@@ -1,3 +1,4 @@
+import time
 import copy 
 
 # Helper Functions vvv ===============================================================
@@ -102,22 +103,22 @@ def expand(choice, frontier, alg, explored):
 			temp = switch(p, x, x+1)
 			if tuple(temp) not in explored:
 				frontier.append( puzz8( temp, g+1, alg(temp)) ) # to the right of space
-			i+=1
+				i+=1
 		if x > 2: # if not in top row
 			temp = switch(p, x, x-3)
 			if tuple(temp) not in explored:
 				frontier.append( puzz8( temp, g+1, alg(temp)) ) # to the top of space
-			i+=1
+				i+=1
 		if x < 6: # if not in bottom row
 			temp = switch(p, x, x+3)
 			if tuple(temp) not in explored:
 				frontier.append( puzz8( temp, g+1, alg(temp)) ) # to the bottom of space
-			i+=1
+				i+=1
 		if (x+1)%3 != 1: # if not in left column
 			temp = switch(p, x, x-1)
 			if tuple(temp) not in explored:
 				frontier.append( puzz8( temp, g+1, alg(temp)) ) # to the left of space
-			i+=1
+				i+=1
 		print ( i, "nodes added")
 	else:
 		print ("Node already explored, moving on.")
@@ -158,6 +159,7 @@ def graphSearch (puzz, alg = returnZero, maxNodes = 100000):
 		frontier[choice].print()
 
 		if (frontier[choice].puzz == goal): #compares selected puzz to goal state
+			print()
 			print ("goal found")
 			print ("To solve this problem the search algorithm expanded a total of", len(explored), "nodes.")
 			print ("The maximum number of nodes in the queue at any one time was", maxQ, ".")
@@ -216,8 +218,9 @@ def main():
 		while userChoice != "1" and userChoice != "2" and userChoice != "3":
 			print ("Type '1' to use a default puzzle. (press enter to submit)")
 			print ("Type '2' to enter your own puzzle.")
-			print ("Type '3' to run all three algorithms on all 6 default puzzles.")
+			print ("Type '3' to run all three algorithms on all 6 default puzzles, output results to trace.txt.")
 			userChoice = input()
+			print()
 
 		if userChoice == "1":
 			userChoice = 0
@@ -230,8 +233,10 @@ def main():
 				print ("5. ohboy")
 				print ("6. impossible")
 				userChoice = input()
+				print()
 			userChoice = (int)(userChoice)
 			init = puzz8( testCases[userChoice-1] )
+
 
 
 		elif userChoice == "2":
@@ -242,19 +247,16 @@ def main():
 				print ("Enter your first row, use a space or tab between numbers (press enter to submit).")
 				userChoice = input()
 				a = userChoice.split()
-				print(a)
 				if len(a) != 3:
 					flag = 1
 				print ("Enter your second row, use a space or tab between numbers (press enter to submit).")
 				userChoice = input()
 				a = a + userChoice.split()
-				print(a)
 				if len(a) != 6:
 					flag = 1
 				print ("Enter your third row, use a space or tab between numbers (press enter to submit).")
 				userChoice = input()
 				a = a + userChoice.split()
-				print(a)
 				if len(a) != 9:
 					flag = 1
 
@@ -268,12 +270,16 @@ def main():
 				if isValidPuzz8(a) == 0:
 					flag = 1
 
+				print()
 				if flag == 1:
 					print ("Something about the puzzle you entered was wrong, Please try again.")
 					print()
 					continue
 
-				init = init = puzz8( a )
+				print ("Puzzle inputted successfully.")
+				printPuzz8(a)
+				print()
+				init = puzz8( a )
 
 		elif userChoice == "3":
 			print ("Running all three algorithms on all 6 default puzzles, outputting to 'trace.txt'.")
@@ -300,20 +306,20 @@ def main():
 		if userChoice != "3":
 			userChoice = 0
 			while userChoice != "1" and userChoice != "2" and userChoice != "3" and userChoice != "4":
-				print ("Enter your choice of algorithm (press enter to submit).")
+				print ("Enter your choice of search algorithm (press enter to submit).")
 				print ("1. Uniform Cost Search.")
 				print ("2. A* with the Misplaced Tile heuristic.")
 				print ("3. A* with the Manhattan distance heuristic.")
 				print ("4. Test only Heuristic separate from search.")
 				userChoice = input()
 
+			print()
 			if userChoice == "4":
 				testHeuristic(init)
 			else: 
 				userChoice = (int)(userChoice)
-
-				print (init)
 				sol, expanded, maxQ = graphSearch(init, algs[userChoice - 1])
+				time.sleep(3);
 main();
 
 
