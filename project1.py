@@ -158,7 +158,7 @@ def graphSearch (puzz, alg = returnZero, maxNodes = 100000):
 		print ("The best state to expand with g(n) =", frontier[choice].g, "and h(n) =", frontier[choice].h, "is")
 		frontier[choice].print()
 
-		if (frontier[choice].puzz == goal): #compares selected puzz to goal state
+		if (frontier[choice].puzz == goal): # compares selected puzz to goal state
 			print()
 			print ("goal found")
 			print ("To solve this problem the search algorithm expanded a total of", len(explored), "nodes.")
@@ -207,6 +207,7 @@ def testHeuristic( puzz ):
 
 # test functions ^^^ ===============================================================
 
+# main function vvv ===============================================================
 def main():
 	userChoice = 0
 	init = puzz8()
@@ -320,6 +321,9 @@ def main():
 				userChoice = (int)(userChoice)
 				sol, expanded, maxQ = graphSearch(init, algs[userChoice - 1])
 				time.sleep(3);
+# main function ^^^ ===============================================================
+
+# run main
 main();
 
 
