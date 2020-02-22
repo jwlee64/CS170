@@ -1,5 +1,29 @@
 import time
 import copy 
+import heapq
+
+# Node Class vvv ===============================================================
+class puzz8:
+	def __init__(self, puzz = [0,0,0,0,0,0,0,0,0], g = 0, h = 0, parent = 0):
+		self.g = g # dist from initial
+		self.puzz = puzz # array 
+		self.h = h # heuristic weight
+		self.priority = g + h # priority for priority queue
+		self.parent = parent
+	
+	def __lt__(self, other):
+		return self.priority < other.priority
+
+	def __gt__(self, other):
+		return self.priority > other.priority
+
+	def print(self):
+		printPuzz8(self.puzz)
+
+	def updatePriority(self):
+		self.priority = self.g + self.h
+
+# Node Class ^^^  ===============================================================
 
 # Helper Functions vvv ===============================================================
 
@@ -30,25 +54,38 @@ def find(puzz, x = 0):
 # def isValidPuzz8( list:puzz )
 # returns 1 if 0-8 are present, and len = 9, or 0
 def isValidPuzz8(puzz):
+	inv = 0
 	if len(puzz) == 9:
 		for i in range(9):
 			if find(puzz, i) == -1:
-				return 0
+				return 0 # returns 0 if any number 0-8 is not present
+		for i in range(9):
+			for j in range(i,9):
+				if puzz[i] > puzz[j]:
+					inv+=1
+		if inv%2 == 1:
+			print ("Puzzle is unsolvable.")
+			return 0 # returns 0 if number of inversions is odd
 		return 1
 	return 0
 
+# def printParents( puzz8:puzz )
+# follows parent pointers, then prints all them out
+def printParents(puzz):
+	trace = [puzz]
+	temp = puzz
+	while temp.parent != 0:
+		trace.insert(0, temp.parent)
+		temp = temp.parent
+
+	print ("Printing the Trace of the Solution from Start to Finish.")
+	for i in range(len(trace)):
+		print ("Move " + str(i))
+		trace[i].print()
+
+	print ("Trace Finished.")
+
 # Helper Functions ^^^ ===============================================================
-
-# Node Class vvv ===============================================================
-class puzz8:
-	def __init__(self, puzz = [0,0,0,0,0,0,0,0,0], g = 0, h = 0):
-		self.g = g # dist from initial
-		self.puzz = puzz # array 
-		self.h = h # heuristic weight
-
-	def print(self):
-		printPuzz8(self.puzz)
-# Node Class ^^^  ===============================================================
 
 # Heuristic Functions vvv ===============================================================
 
@@ -102,76 +139,69 @@ def expand(choice, frontier, alg, explored):
 		if (x+1)%3 != 0: # if not in right column
 			temp = switch(p, x, x+1)
 			if tuple(temp) not in explored:
-				frontier.append( puzz8( temp, g+1, alg(temp)) ) # to the right of space
+				heapq.heappush( frontier, puzz8( temp, g+1, alg(temp), choice) ) # to the right of space
 				i+=1
 		if x > 2: # if not in top row
 			temp = switch(p, x, x-3)
 			if tuple(temp) not in explored:
-				frontier.append( puzz8( temp, g+1, alg(temp)) ) # to the top of space
+				heapq.heappush( frontier, puzz8( temp, g+1, alg(temp), choice) ) # to the top of space
 				i+=1
 		if x < 6: # if not in bottom row
 			temp = switch(p, x, x+3)
 			if tuple(temp) not in explored:
-				frontier.append( puzz8( temp, g+1, alg(temp)) ) # to the bottom of space
+				heapq.heappush( frontier, puzz8( temp, g+1, alg(temp), choice) ) # to the bottom of space
 				i+=1
 		if (x+1)%3 != 1: # if not in left column
 			temp = switch(p, x, x-1)
 			if tuple(temp) not in explored:
-				frontier.append( puzz8( temp, g+1, alg(temp)) ) # to the left of space
+				heapq.heappush( frontier, puzz8( temp, g+1, alg(temp), choice) ) # to the left of space
 				i+=1
 		print ( i, "nodes added")
 	else:
 		print ("Node already explored, moving on.")
 	print()
 
-# def choose(list:frontier)
-# chooses the lowest cost node from frontier list
-def choose( frontier ): 
-	state = 0
-	minCost = frontier[0].g + frontier[0].h
-	i = 1
-	for i in range(1,len(frontier)):
-		w = frontier[i].g + frontier[i].h
-		if w < minCost:
-			minCost = w
-			state = i
-	return state
-
 # def graphSearch (puzz8:puzz, func:alg = returnZero, int:maxNodes = 100000)
 # initial state, heuristic func, maxNodes
-def graphSearch (puzz, alg = returnZero, maxNodes = 100000):
+def graphSearch (puzz, alg = returnZero, checkImp = 0, maxNodes = 100000):
 	puzz.h = alg(puzz.puzz) # add heuristic cost to initial state
-	frontier = [ puzz ]; # initialize frontier to a list
+	puzz.updatePriority()
+	frontier = []; # initialize frontier to a list
+	heapq.heappush(frontier, puzz)
 	maxQ = len(frontier) # initialize max queue size
 	explored = set(); # initialize explored set
 
 	print ("initial state")
 	puzz.print()
 	print()
-	
-	# loop until maxNodes default 100,000 , so no infinite loop
-	for i in range(maxNodes):
-		if len(frontier) < 1:
-			break;
-		choice = choose(frontier) # choose lowest cost node
 
-		print ("The best state to expand with g(n) =", frontier[choice].g, "and h(n) =", frontier[choice].h, "is")
-		frontier[choice].print()
+	print (checkImp)
+	if checkImp == 0 or isValidPuzz8(puzz.puzz) == 1:
+		# loop until maxNodes default 100,000 , so no infinite loop
+		for i in range(maxNodes):
+			if len(frontier) < 1:
+				break;
+			choice = heapq.heappop(frontier)
 
-		if (frontier[choice].puzz == goal): # compares selected puzz to goal state
-			print()
-			print ("goal found")
-			print ("To solve this problem the search algorithm expanded a total of", len(explored), "nodes.")
-			print ("The maximum number of nodes in the queue at any one time was", maxQ, ".")
-			return frontier[choice], len(explored), maxQ #returns
+			print ("The best state to expand with g(n) =", choice.g, "and h(n) =", choice.h, "is")
+			choice.print()
 
-		expand(frontier[choice], frontier, alg, explored) # expand node
-		explored.add(tuple(frontier[choice].puzz)) # add puzzle instance to explored since objs will be different
-		if maxQ < len(frontier): # updates max queue size 
-			maxQ = len(frontier)
-		frontier.pop(choice) # remove choice from frontier
+			if (choice.puzz == goal): # compares selected puzz to goal state
+				print()
+				print ("goal found")
+				printParents(choice)
+				print ("To solve this problem the search algorithm expanded a total of", len(explored), "nodes.")
+				print ("The maximum number of nodes in the queue at any one time was", maxQ, ".")
+				return choice, len(explored), maxQ #returns
 
-	print ("Did not find a solution in", len(explored), "nodes.")
+			expand(choice, frontier, alg, explored) # expand node
+			explored.add(tuple(choice.puzz)) # add puzzle instance to explored since objs will be different
+			if maxQ < len(frontier): # updates max queue size 
+				maxQ = len(frontier)
+			# frontier.pop(choice) # remove choice from frontier
+
+		print ("Did not find a solution in", len(explored), "nodes.")
+
 	return puzz8(), len(explored), maxQ # if no solution found return empty puzzle
 
 # Search Functions ^^^ ===============================================================
@@ -291,7 +321,7 @@ def main():
 			
 			for i in range(6):
 				for j in range(3):
-					sol, expanded, maxQ = graphSearch(puzz8(testCases[i]), algs[j], 1000000)
+					sol, expanded, maxQ = graphSearch(puzz8(testCases[i]), algs[j], 0, 1000000)
 					storeVals[i][j] = {'s': sol, 'e': expanded, 'm': maxQ, 'i': puzz8(testCases[i], 0, algs[j](testCases[i]) ) }
 
 			out = open('trace.txt','w')
@@ -319,7 +349,12 @@ def main():
 				testHeuristic(init)
 			else: 
 				userChoice = (int)(userChoice)
-				sol, expanded, maxQ = graphSearch(init, algs[userChoice - 1])
+				testImp = 2
+				while testImp != "1" and testImp != "0":
+					print ("Check to see if puzzle is Impossible? (Enter 0 for no, 1 for yes).")
+					testImp = input()
+				testImp = (int)(testImp)
+				sol, expanded, maxQ = graphSearch(init, algs[userChoice - 1], testImp)
 				time.sleep(3);
 # main function ^^^ ===============================================================
 
