@@ -1,0 +1,108 @@
+Test Case - trivial, with Alg - Uniform Cost Search
+Initial State = [1,2,3,4,5,6,7,8,0] g = 0 h = 0
+Max Queue Size = 1
+Nodes Expanded = 0
+Solution State = [1,2,3,4,5,6,7,8,0] g = 0 h = 0
+
+Test Case - trivial, with Alg - A* with the Misplaced Tile heuristic
+Initial State = [1,2,3,4,5,6,7,8,0] g = 0 h = 0
+Max Queue Size = 1
+Nodes Expanded = 0
+Solution State = [1,2,3,4,5,6,7,8,0] g = 0 h = 0
+
+Test Case - trivial, with Alg - A* with the Manhattan distance heuristic
+Initial State = [1,2,3,4,5,6,7,8,0] g = 0 h = 0
+Max Queue Size = 1
+Nodes Expanded = 0
+Solution State = [1,2,3,4,5,6,7,8,0] g = 0 h = 0
+
+Test Case - very easy, with Alg - Uniform Cost Search
+Initial State = [1,2,3,4,5,6,7,0,8] g = 0 h = 0
+Max Queue Size = 3
+Nodes Expanded = 1
+Solution State = [1,2,3,4,5,6,7,8,0] g = 1 h = 0
+
+Test Case - very easy, with Alg - A* with the Misplaced Tile heuristic
+Initial State = [1,2,3,4,5,6,7,0,8] g = 0 h = 1
+Max Queue Size = 3
+Nodes Expanded = 1
+Solution State = [1,2,3,4,5,6,7,8,0] g = 1 h = 0
+
+Test Case - very easy, with Alg - A* with the Manhattan distance heuristic
+Initial State = [1,2,3,4,5,6,7,0,8] g = 0 h = 1
+Max Queue Size = 3
+Nodes Expanded = 1
+Solution State = [1,2,3,4,5,6,7,8,0] g = 1 h = 0
+
+Test Case - easy, with Alg - Uniform Cost Search
+Initial State = [1,2,0,4,5,3,7,8,6] g = 0 h = 0
+Max Queue Size = 4
+Nodes Expanded = 3
+Solution State = [1,2,3,4,5,6,7,8,0] g = 2 h = 0
+
+Test Case - easy, with Alg - A* with the Misplaced Tile heuristic
+Initial State = [1,2,0,4,5,3,7,8,6] g = 0 h = 2
+Max Queue Size = 3
+Nodes Expanded = 2
+Solution State = [1,2,3,4,5,6,7,8,0] g = 2 h = 0
+
+Test Case - easy, with Alg - A* with the Manhattan distance heuristic
+Initial State = [1,2,0,4,5,3,7,8,6] g = 0 h = 2
+Max Queue Size = 3
+Nodes Expanded = 2
+Solution State = [1,2,3,4,5,6,7,8,0] g = 2 h = 0
+
+Test Case - doable, with Alg - Uniform Cost Search
+Initial State = [0,1,2,4,5,3,7,8,6] g = 0 h = 0
+Max Queue Size = 20
+Nodes Expanded = 30
+Solution State = [1,2,3,4,5,6,7,8,0] g = 4 h = 0
+
+Test Case - doable, with Alg - A* with the Misplaced Tile heuristic
+Initial State = [0,1,2,4,5,3,7,8,6] g = 0 h = 4
+Max Queue Size = 4
+Nodes Expanded = 4
+Solution State = [1,2,3,4,5,6,7,8,0] g = 4 h = 0
+
+Test Case - doable, with Alg - A* with the Manhattan distance heuristic
+Initial State = [0,1,2,4,5,3,7,8,6] g = 0 h = 4
+Max Queue Size = 4
+Nodes Expanded = 4
+Solution State = [1,2,3,4,5,6,7,8,0] g = 4 h = 0
+
+Test Case - ohboy, with Alg - Uniform Cost Search
+Initial State = [8,7,1,6,0,2,5,4,3] g = 0 h = 0
+Max Queue Size = 32152
+Nodes Expanded = 89179
+Solution State = [1,2,3,4,5,6,7,8,0] g = 22 h = 0
+
+Test Case - ohboy, with Alg - A* with the Misplaced Tile heuristic
+Initial State = [8,7,1,6,0,2,5,4,3] g = 0 h = 8
+Max Queue Size = 3753
+Nodes Expanded = 6145
+Solution State = [1,2,3,4,5,6,7,8,0] g = 22 h = 0
+
+Test Case - ohboy, with Alg - A* with the Manhattan distance heuristic
+Initial State = [8,7,1,6,0,2,5,4,3] g = 0 h = 18
+Max Queue Size = 248
+Nodes Expanded = 388
+Solution State = [1,2,3,4,5,6,7,8,0] g = 22 h = 0
+
+Test Case - impossible, with Alg - Uniform Cost Search
+Initial State = [1,2,3,4,5,6,8,7,0] g = 0 h = 0
+Max Queue Size = 32828
+Nodes Expanded = 181440
+Solution State = [0,0,0,0,0,0,0,0,0] g = 0 h = 0
+
+Test Case - impossible, with Alg - A* with the Misplaced Tile heuristic
+Initial State = [1,2,3,4,5,6,8,7,0] g = 0 h = 2
+Max Queue Size = 29883
+Nodes Expanded = 181440
+Solution State = [0,0,0,0,0,0,0,0,0] g = 0 h = 0
+
+Test Case - impossible, with Alg - A* with the Manhattan distance heuristic
+Initial State = [1,2,3,4,5,6,8,7,0] g = 0 h = 2
+Max Queue Size = 24005
+Nodes Expanded = 181440
+Solution State = [0,0,0,0,0,0,0,0,0] g = 0 h = 0
+

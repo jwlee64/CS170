@@ -163,7 +163,7 @@ def expand(choice, frontier, alg, explored):
 
 # def graphSearch (puzz8:puzz, func:alg = returnZero, int:maxNodes = 100000)
 # initial state, heuristic func, maxNodes
-def graphSearch (puzz, alg = returnZero, checkImp = 0, maxNodes = 100000):
+def graphSearch (puzz, alg = returnZero, checkImp = 0, maxNodes = 1000000):
 	puzz.h = alg(puzz.puzz) # add heuristic cost to initial state
 	puzz.updatePriority()
 	frontier = []; # initialize frontier to a list
@@ -185,7 +185,7 @@ def graphSearch (puzz, alg = returnZero, checkImp = 0, maxNodes = 100000):
 
 			print ("The best state to expand with g(n) =", choice.g, "and h(n) =", choice.h, "is")
 			choice.print()
-
+			print ("Frontier size: " + str(len(frontier)) + " - Explored Size: " + str(len(explored))) 
 			if (choice.puzz == goal): # compares selected puzz to goal state
 				print()
 				print ("goal found")
@@ -321,21 +321,21 @@ def main():
 			
 			for i in range(6):
 				for j in range(3):
-					sol, expanded, maxQ = graphSearch(puzz8(testCases[i]), algs[j], 0, 1000000)
+					sol, expanded, maxQ = graphSearch(puzz8(testCases[i]), algs[j], 0)
 					storeVals[i][j] = {'s': sol, 'e': expanded, 'm': maxQ, 'i': puzz8(testCases[i], 0, algs[j](testCases[i]) ) }
 
 			out = open('trace.txt','w')
-			for i in range(6 ):
+			for i in range(6):
 				for j in range(3):
 					out.write( 'Test Case - ' + testCaseNames[i] + ', with Alg - ' + algNames[j] + '\n')
 					out.write( 'Initial State = [' + ','.join(map(str, testCases[i])) + '] g = ' + str(storeVals[i][j]['i'].g) + ' h = ' + str(storeVals[i][j]['i'].h) + '\n')
 					out.write( 'Max Queue Size = ' + str(storeVals[i][j]['m']) + '\n')
 					out.write( 'Nodes Expanded = ' + str(storeVals[i][j]['e']) + '\n')
 					out.write( 'Solution State = [' + ','.join(map(str, storeVals[i][j]['s'].puzz)) + '] g = ' + str(storeVals[i][j]['s'].g) + ' h = ' + str(storeVals[i][j]['s'].h) + '\n' + '\n')
-
+			out.close()
 
 		if userChoice != "3":
-			userChoice = 0
+			userChoice = -1
 			while userChoice != "1" and userChoice != "2" and userChoice != "3" and userChoice != "4":
 				print ("Enter your choice of search algorithm (press enter to submit).")
 				print ("1. Uniform Cost Search.")
@@ -356,6 +356,7 @@ def main():
 				testImp = (int)(testImp)
 				sol, expanded, maxQ = graphSearch(init, algs[userChoice - 1], testImp)
 				time.sleep(3);
+		userChoice = 0
 # main function ^^^ ===============================================================
 
 # run main
